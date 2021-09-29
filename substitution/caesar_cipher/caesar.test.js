@@ -80,7 +80,7 @@ describe("Should be able to encrypt", () => {
       const ciphertext = "OtmsItj89D";
       expect(encryptString(plain, interval)).toBe(ciphertext);
     });
-    it.only("for long strings", () => {
+    it("for long strings", () => {
       const plain = " A string with ABC, abc, 123 and @#$#&";
       const interval = 5;
       const ciphertext = "%F%xywnsl%|nym%FGH1%fgh1%678%fsi%E()(+";
@@ -90,6 +90,13 @@ describe("Should be able to encrypt", () => {
 });
 
 describe("shoud be able to decrypt", () => {
+  it("should through if one of the params is wrong", () => {
+    expect(() => {
+      decryptString("", 1);
+    }).toThrow(
+      "Must be supplied with a string as text to encrypt and a numeric interval."
+    );
+  });
   it("for single characters", () => {
     const plain = "a";
     const ciphertext = "d";
@@ -112,7 +119,7 @@ describe("shoud be able to decrypt", () => {
     });
   });
 
-  it.only("should decrypt for long strings", () => {
+  it("should decrypt for long strings", () => {
     const plain = "ABC,abc, 123 and #$#?";
     const ciphertext = "HIJ3hij3'89:'huk'*+*F";
     const interval = 7;
