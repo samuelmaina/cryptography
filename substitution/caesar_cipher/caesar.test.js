@@ -7,6 +7,14 @@ describe("Should be able to encrypt", () => {
     const interval = 3;
     expect(encryptString(plain, interval)).toBe(ciphertext);
   });
+
+  it.only("should be overflow", () => {
+    //the last character in our implementation is the charCode 126;
+    const the126thAsciiChar = "~";
+    const ciphertext = "%";
+    const interval = 5;
+    expect(encryptString(the126thAsciiChar, interval)).toBe(ciphertext);
+  });
   describe("should encyrpt single characters", () => {
     it("lowercase", () => {
       const plain = "a";
@@ -35,7 +43,7 @@ describe("Should be able to encrypt", () => {
       const ciphertext = "OtmsItj89D";
       expect(encryptString(plain, interval)).toBe(ciphertext);
     });
-    it.only("for long strings", () => {
+    it("for long strings", () => {
       const plain = "ABC, abc, 123 and @#$#&";
       const interval = 5;
       const ciphertext = "FGH1%fgh1%678%fsi%E()(+";

@@ -16,6 +16,6 @@ exports.encryptString = (string, interval) => {
 
 function encryptChar(charCode, interval) {
   let remainder = (charCode + interval) % upperlimit;
-  if (remainder < lowerlimit) return (charCode += lowerlimit);
+  if (remainder < lowerlimit) return remainder + lowerlimit;
   return remainder;
 }
