@@ -1,6 +1,43 @@
-const { encryptString } = require("./caesar");
+const { encryptString, decryptString } = require("./caesar");
 
 describe("Should be able to encrypt", () => {
+  describe("should throw when provided with the wrong params", () => {
+    describe("string", () => {
+      it("invalid", () => {
+        expect(() => {
+          encryptString(12, 12);
+        }).toThrow(
+          "Must be supplied with a string as text to encrypt and a numeric interval."
+        );
+      });
+
+      it("empty", () => {
+        expect(() => {
+          encryptString("", 12);
+        }).toThrow(
+          "Must be supplied with a string as text to encrypt and a numeric interval."
+        );
+      });
+    });
+
+    describe("interval", () => {
+      it("invalid", () => {
+        expect(() => {
+          encryptString(12, [1]);
+        }).toThrow(
+          "Must be supplied with a string as text to encrypt and a numeric interval."
+        );
+      });
+
+      it("less than 1", () => {
+        expect(() => {
+          encryptString("string", 0);
+        }).toThrow(
+          "Must be supplied with a string as text to encrypt and a numeric interval."
+        );
+      });
+    });
+  });
   it("should be able to set an interval", () => {
     const plain = "a";
     const ciphertext = "d";
@@ -8,10 +45,10 @@ describe("Should be able to encrypt", () => {
     expect(encryptString(plain, interval)).toBe(ciphertext);
   });
 
-  it.only("should be overflow", () => {
+  it("should not overflow", () => {
     //the last character in our implementation is the charCode 126;
     const the126thAsciiChar = "~";
-    const ciphertext = "%";
+    const ciphertext = "$";
     const interval = 5;
     expect(encryptString(the126thAsciiChar, interval)).toBe(ciphertext);
   });
@@ -28,7 +65,7 @@ describe("Should be able to encrypt", () => {
       const ciphertext = "H";
       expect(encryptString(plain, interval)).toBe(ciphertext);
     });
-    it("characters", () => {
+    it("special characters", () => {
       const plain = "?";
       const interval = 5;
       const ciphertext = "D";
@@ -43,11 +80,42 @@ describe("Should be able to encrypt", () => {
       const ciphertext = "OtmsItj89D";
       expect(encryptString(plain, interval)).toBe(ciphertext);
     });
-    it("for long strings", () => {
-      const plain = "ABC, abc, 123 and @#$#&";
+    it.only("for long strings", () => {
+      const plain = " A string with ABC, abc, 123 and @#$#&";
       const interval = 5;
-      const ciphertext = "FGH1%fgh1%678%fsi%E()(+";
+      const ciphertext = "%F%xywnsl%|nym%FGH1%fgh1%678%fsi%E()(+";
       expect(encryptString(plain, interval)).toEqual(ciphertext);
     });
+  });
+});
+
+describe("shoud be able to decrypt", () => {
+  it("for single characters", () => {
+    const plain = "a";
+    const ciphertext = "d";
+    const interval = 3;
+    expect(decryptString(ciphertext, interval)).toBe(plain);
+  });
+
+  describe("Does not overflow", () => {
+    it("upper bound", () => {
+      const plain = "~";
+      const ciphertext = "$";
+      const interval = 5;
+      expect(decryptString(ciphertext, interval)).toBe(plain);
+    });
+    it("lower bound", () => {
+      const plain = " ";
+      const ciphertext = "%";
+      const interval = 5;
+      expect(decryptString(ciphertext, interval)).toBe(plain);
+    });
+  });
+
+  it.only("should decrypt for long strings", () => {
+    const plain = "ABC,abc, 123 and #$#?";
+    const ciphertext = "HIJ3hij3'89:'huk'*+*F";
+    const interval = 7;
+    expect(decryptString(ciphertext, interval)).toBe(plain);
   });
 });
